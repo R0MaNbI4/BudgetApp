@@ -1,7 +1,12 @@
 package budget.domain;
 
+import budget.dao.TransactionDAO;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Transaction {
@@ -19,6 +24,18 @@ public class Transaction {
         this.category = category;
         this.date = date;
         this.note = note;
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id=" + id +
+                ", value=" + value +
+                ", account=" + account +
+                ", category=" + category +
+                ", date=" + date +
+                ", note='" + note + '\'' +
+                '}';
     }
 
     public Transaction(int value, Account account, Category category, Date date, String note) {

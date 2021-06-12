@@ -10,13 +10,21 @@
                 <Pattern>%d [%p] %C{3}.%M(%F:%L) – %m%n</Pattern>
             </PatternLayout>
         </File>
+        <File name="trace" fileName="trace.log" append="true">
+            <PatternLayout>
+                <Pattern>%d [%p] %C{3}.%M(%F:%L) – %m%n</Pattern>
+            </PatternLayout>
+        </File>
     </Appenders>
 
     <Loggers>
-        <Root level="DEBUG">
+        <Root level="debug">
             <AppenderRef ref="stdout"/>
             <AppenderRef ref="fout"/>
         </Root>
+        <Logger name="trace" level="off">
+            <AppenderRef ref="trace"/>
+        </Logger>
 <!--        <logger name="ru.gb.logger" level="DEBUG">-->
 <!--            <AppenderRef ref="fout"/>-->
 <!--        </logger>-->

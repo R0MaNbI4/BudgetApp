@@ -3,3 +3,17 @@
 2021-06-12 14:45:47,985 [DEBUG] Main.main(Main.java:11) – Test message
 java.lang.RuntimeException: This is test error
 	at Main.main(Main.java:9) [classes/:?]
+2021-06-12 15:06:07,418 [DEBUG] Main.main(Main.java:17) – Test message
+2021-06-12 15:06:40,383 [DEBUG] Main.main(Main.java:17) – Test message
+2021-06-12 15:08:04,571 [DEBUG] Main.main(Main.java:17) – Test message
+2021-06-12 15:15:18,586 [DEBUG] Main.main(Main.java:17) – Test messagebudget.domain.Transaction@4b2c5e02
+java.lang.RuntimeException: This is test error
+	at Main.main(Main.java:15) [classes/:?]
+2021-06-12 15:17:01,027 [DEBUG] Main.main(Main.java:17) – Test message
+Transaction{id=1, value=200, account=budget.domain.Account@5f0fd5a0, category=budget.domain.Category@64e7619d, date=Tue Feb 10 22:42:01 IRKT 1970, note='3 пачки молока'}
+java.lang.RuntimeException: This is test error
+	at Main.main(Main.java:15) [classes/:?]
+2021-06-12 15:45:00,424 [INFO] Main.main(Main.java:17) – Test message
+Transaction{id=1, value=200, account=Account{id=1, name='Test', balance=0}, category=Category{id=1, name='Food', isIncome=false}, date=Tue Feb 10 22:42:01 IRKT 1970, note='3 пачки молока'}
+java.lang.RuntimeException: This is test error
+	at Main.main(Main.java:15) [classes/:?]

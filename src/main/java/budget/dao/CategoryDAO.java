@@ -2,6 +2,8 @@ package budget.dao;
 
 import budget.domain.Account;
 import budget.domain.Category;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CategoryDAO {
+    private static final Logger logger = LogManager.getLogger(CategoryDAO.class);
+
     public static void addCategory(Category category) {
         Connection connection = DBConnection.getConnection();
         try {
@@ -16,7 +20,9 @@ public class CategoryDAO {
             statement.setString(1, category.getName());
             statement.setBoolean(2, category.isIncome());
             statement.execute();
+            logger.info("category added\n" + category.toString());
         } catch (SQLException e) {
+            logger.error("Can't add category\n" + category.toString(), e);
             throw new DAOException("Can't add category", e);
         }
     }
@@ -28,7 +34,10 @@ public class CategoryDAO {
             statement.setString(1, category.getName());
             statement.setBoolean(2, category.isIncome());
             statement.setInt(3, id);
+            statement.execute();
+            logger.info("category updated\n" + category.toString());
         } catch (SQLException e) {
+            logger.error("Can't update category\n" + category.toString(), e);
             throw new DAOException(String.format("Can't update category with id = %d", id), e);
         }
     }
@@ -39,7 +48,9 @@ public class CategoryDAO {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM category WHERE id = ?");
             statement.setInt(1, id);
             statement.execute();
+            logger.info(String.format("category deleted with id = %d", id));
         } catch (SQLException e) {
+            logger.error(String.format("Can't delete category with id = %d", id), e);
             throw new DAOException(String.format("Can't delete category with id = %d", id), e);
         }
     }
@@ -55,13 +66,17 @@ public class CategoryDAO {
                 return null;
             }
 
-            return new Category(
+            Category category = new Category(
                     resultSet.getInt(1),
                     resultSet.getString(2),
                     resultSet.getBoolean(3)
             );
+
+            logger.trace("category found\n" + category.toString());
+            return category;
         } catch (SQLException e) {
-            throw new DAOException(String.format("Category with id = %d not found", id), e);
+            logger.error(String.format("Can't find category with id = %d", id), e);
+            throw new DAOException(String.format("Can't find category with id = %d", id), e);
         }
     }
 }

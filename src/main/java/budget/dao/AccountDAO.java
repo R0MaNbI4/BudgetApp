@@ -2,6 +2,8 @@ package budget.dao;
 
 import budget.domain.Account;
 import budget.domain.Transaction;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,6 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class AccountDAO {
+    private static final Logger logger = LogManager.getLogger(AccountDAO.class);
+
     public static void addAccount(Account account) {
         Connection connection = DBConnection.getConnection();
         try {
@@ -16,7 +20,9 @@ public class AccountDAO {
             statement.setString(1, account.getName());
             statement.setInt(2, account.getBalance());
             statement.execute();
+            logger.info("account added\n" + account.toString());
         } catch (SQLException e) {
+            logger.error("Can't add account\n" + account.toString(), e);
             throw new DAOException("Can't add account", e);
         }
     }
@@ -29,7 +35,9 @@ public class AccountDAO {
             statement.setInt(2, account.getBalance());
             statement.setInt(3, id);
             statement.execute();
+            logger.info("account updated\n" + account.toString());
         } catch (SQLException e) {
+            logger.error("Can't update account\n" + account.toString(), e);
             throw new DAOException(String.format("Can't update account with id = %d", id), e);
         }
     }
@@ -40,7 +48,9 @@ public class AccountDAO {
             PreparedStatement statement = connection.prepareStatement("DELETE FROM account WHERE id = ?");
             statement.setInt(1, id);
             statement.execute();
+            logger.info(String.format("account deleted with id = %d", id));
         } catch (SQLException e) {
+            logger.error(String.format("Can't delete account with id = %d", id), e);
             throw new DAOException(String.format("Can't delete account with id = %d", id), e);
         }
     }
@@ -56,13 +66,17 @@ public class AccountDAO {
                 return null;
             }
 
-            return new Account(
+            Account account = new Account(
                     resultSet.getInt(1),
                     resultSet.getString(2),
                     resultSet.getInt(3)
             );
+
+            logger.trace("account found\n" + account.toString());
+            return account;
         } catch (SQLException e) {
-            throw new DAOException(String.format("Account with id = %d not found", id), e);
+            logger.error(String.format("Can't found account with id = %d", id), e);
+            throw new DAOException(String.format("Can't found account with id = %d", id), e);
         }
     }
 }

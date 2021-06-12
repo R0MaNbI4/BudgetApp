@@ -11,6 +11,15 @@ public class Category {
         this.isIncome = isIncome;
     }
 
+    @Override
+    public String toString() {
+        return "Category{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isIncome=" + isIncome +
+                '}';
+    }
+
     public Category(String name, boolean isIncome) {
         this(-1, name, isIncome);
     }
