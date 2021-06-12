@@ -11,6 +11,10 @@ public class Category {
         this.isIncome = isIncome;
     }
 
+    public Category(String name, boolean isIncome) {
+        this(-1, name, isIncome);
+    }
+
     public int getId() {
         return id;
     }
