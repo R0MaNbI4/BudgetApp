@@ -1,0 +1,6 @@
+*.txt
+*.exe
+
+/libraries/*
+/**/.idea/*
+/**/artifacts/*
