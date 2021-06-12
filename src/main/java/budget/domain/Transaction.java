@@ -10,12 +10,15 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Transaction {
+    private static final Logger logger = LogManager.getLogger(Transaction.class);
+
     private int id;
     private int value;
     private Account account;
     private Category category;
     private Date date;
     private String note;
+
 
     public Transaction(int id, int value, Account account, Category category, Date date, String note) {
         this.id = id;
@@ -24,6 +27,10 @@ public class Transaction {
         this.category = category;
         this.date = date;
         this.note = note;
+    }
+
+    public Transaction(int value, Account account, Category category, Date date, String note) {
+        this(-1, value, account, category, date, note);
     }
 
     @Override
@@ -36,10 +43,6 @@ public class Transaction {
                 ", date=" + date +
                 ", note='" + note + '\'' +
                 '}';
-    }
-
-    public Transaction(int value, Account account, Category category, Date date, String note) {
-        this(-1, value, account, category, date, note);
     }
 
     Transaction setValue(int value) {
@@ -108,5 +111,43 @@ public class Transaction {
 
     public String getNote() {
         return note;
+    }
+
+    public static void addTransaction(Transaction transaction) {
+        TransactionDAO.addTransaction(transaction);
+    }
+
+    public static void  updateTransaction(int id, Transaction modified) {
+        TransactionDAO.updateTransaction(id, modified);
+    }
+
+    public static void updateTransaction(Transaction original, Transaction modified) {
+        int id = original.getId();
+        if (id != -1) {
+            TransactionDAO.updateTransaction(id, modified);
+        } else {
+            logger.debug("Transaction hasn't id\n" + original.toString());
+        }
+    }
+
+    public static void deleteTransaction(int id) {
+        TransactionDAO.deleteTransaction(id);
+    }
+
+    public static void deleteTransaction(Transaction transaction) {
+        int id = transaction.getId();
+        if (id != -1) {
+            TransactionDAO.deleteTransaction(id);
+        } else {
+            logger.debug("Transaction hasn't id\n" + transaction.toString());
+        }
+    }
+
+    public static Transaction getTransactionById(int id) {
+        return TransactionDAO.getTransactionById(id);
+    }
+
+    public static ArrayList<Transaction> getTransactionByDate(Date startDate, Date endDate) {
+        return TransactionDAO.getTransactionByDate(startDate, endDate);
     }
 }

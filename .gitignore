@@ -1,5 +1,6 @@
 *.txt
 *.exe
+*.log
 
 /libraries/*
 /**/.idea/*

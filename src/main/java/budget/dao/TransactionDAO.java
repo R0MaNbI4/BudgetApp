@@ -1,6 +1,5 @@
 package budget.dao;
 
-import budget.domain.Category;
 import budget.domain.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
