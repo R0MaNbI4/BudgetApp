@@ -6,7 +6,7 @@ public class CategoryList {
     }
 
     Category getCategoryByName(String name) {
-        return new Category();
+        return new Category("test", true);
     }
 
     void updateCategory(Category original, Category modified) {

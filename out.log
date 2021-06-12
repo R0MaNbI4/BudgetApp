@@ -1,0 +1,5 @@
+2021-06-12 14:43:22,139 [INFO] Main.main(Main.java:8) – Test
+2021-06-12 14:43:56,775 [INFO] Main.main(Main.java:8) – Test
+2021-06-12 14:45:47,985 [DEBUG] Main.main(Main.java:11) – Test message
+java.lang.RuntimeException: This is test error
+	at Main.main(Main.java:9) [classes/:?]

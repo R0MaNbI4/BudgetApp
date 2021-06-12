@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration name="logger">
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss} [%p] (%F:%L) %m%n"/>
+        </Console>
+        <File name="fout" fileName="out.log" append="true">
+            <PatternLayout>
+                <Pattern>%d [%p] %C{3}.%M(%F:%L) – %m%n</Pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="stdout"/>
+            <AppenderRef ref="fout"/>
+        </Root>
+<!--        <logger name="ru.gb.logger" level="DEBUG">-->
+<!--            <AppenderRef ref="fout"/>-->
+<!--        </logger>-->
+    </Loggers>
+</Configuration>
