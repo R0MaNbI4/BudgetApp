@@ -100,22 +100,21 @@ public class TransactionDAO {
             }
 
             ArrayList<Transaction> result = new ArrayList<>();
-            while(resultSet.next()) {
-                result.add(
-                    new Transaction(
-                        resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        AccountDAO.getAccountById(resultSet.getInt(3)),
-                        CategoryDAO.getCategoryById(resultSet.getInt(4)),
-                        resultSet.getDate(5),
-                        resultSet.getString(6)
+            do { result.add(
+                new Transaction(
+                    resultSet.getInt(1),
+                    resultSet.getInt(2),
+                    AccountDAO.getAccountById(resultSet.getInt(3)),
+                    CategoryDAO.getCategoryById(resultSet.getInt(4)),
+                    resultSet.getDate(5),
+                    resultSet.getString(6)
                 ));
-            }
+            } while(resultSet.next());
 
             logger.trace("transactions found\n" + result.toString());
             return result;
         } catch (SQLException e) {
-            logger.error(String.format("Can't found transaction where the date is in the range from %s to %s", startDate, endDate), e);
+            logger.error(String.format("Something went wrong while trying to get transactions in the range from %s to %s", startDate, endDate), e);
             throw new DAOException("SWW", e);
         }
     }

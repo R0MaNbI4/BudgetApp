@@ -1,6 +1,7 @@
 package budget.dao;
 
 import budget.domain.Account;
+import budget.domain.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AccountDAO {
     private static final Logger logger = LogManager.getLogger(AccountDAO.class);
@@ -76,6 +78,34 @@ public class AccountDAO {
         } catch (SQLException e) {
             logger.error(String.format("Can't found account with id = %d", id), e);
             throw new DAOException(String.format("Can't found account with id = %d", id), e);
+        }
+    }
+
+    public static ArrayList<Account> getAllAccounts() {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM account");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            ArrayList<Account> result = new ArrayList<>();
+            do {
+                result.add(
+                    new Account(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getInt(3)
+                ));
+            } while(resultSet.next());
+
+            logger.trace("accounts found\n" + result.toString());
+            return result;
+        } catch (SQLException e) {
+            logger.error("Something went wrong while trying to get all accounts", e);
+            throw new DAOException("Something went wrong while trying to get all accounts", e);
         }
     }
 }

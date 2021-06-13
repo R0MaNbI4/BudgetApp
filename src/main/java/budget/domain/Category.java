@@ -1,9 +1,12 @@
 package budget.domain;
 
+import budget.dao.AccountDAO;
 import budget.dao.CategoryDAO;
 import budget.dao.TransactionDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
 
 public class Category {
     private static final Logger logger = LogManager.getLogger(Category.class);
@@ -75,5 +78,9 @@ public class Category {
 
     public static Category getCategoryById(int id) {
         return CategoryDAO.getCategoryById(id);
+    }
+
+    public static ArrayList<Category> getAllCategories() {
+        return CategoryDAO.getAllCategories();
     }
 }

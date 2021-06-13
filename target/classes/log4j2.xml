@@ -18,11 +18,11 @@
     </Appenders>
 
     <Loggers>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="stdout"/>
             <AppenderRef ref="fout"/>
         </Root>
-        <Logger name="trace" level="trace">
+        <Logger name="trace" level="off">
             <AppenderRef ref="trace"/>
         </Logger>
 <!--        <logger name="ru.gb.logger" level="DEBUG">-->

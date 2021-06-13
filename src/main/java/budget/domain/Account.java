@@ -1,9 +1,10 @@
 package budget.domain;
 
 import budget.dao.AccountDAO;
-import budget.dao.CategoryDAO;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
 
 public class Account {
     private static final Logger logger = LogManager.getLogger(Account.class);
@@ -76,5 +77,9 @@ public class Account {
 
     public static Account getAccountById(int id) {
         return AccountDAO.getAccountById(id);
+    }
+
+    public static ArrayList<Account> getAllAccounts() {
+        return AccountDAO.getAllAccounts();
     }
 }

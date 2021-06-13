@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class CategoryDAO {
     private static final Logger logger = LogManager.getLogger(CategoryDAO.class);
@@ -77,6 +78,34 @@ public class CategoryDAO {
         } catch (SQLException e) {
             logger.error(String.format("Can't find category with id = %d", id), e);
             throw new DAOException(String.format("Can't find category with id = %d", id), e);
+        }
+    }
+
+    public static ArrayList<Category> getAllCategories() {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM category");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            ArrayList<Category> result = new ArrayList<>();
+            do {
+                result.add(
+                        new Category(
+                                resultSet.getInt(1),
+                                resultSet.getString(2),
+                                resultSet.getBoolean(3)
+                        ));
+            } while(resultSet.next());
+
+            logger.trace("categories found\n" + result.toString());
+            return result;
+        } catch (SQLException e) {
+            logger.error("Something went wrong while trying to get all categories", e);
+            throw new DAOException("Something went wrong while trying to get all categories", e);
         }
     }
 }
