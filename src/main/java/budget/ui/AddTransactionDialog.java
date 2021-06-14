@@ -3,7 +3,6 @@ package budget.ui;
 import budget.dao.TransactionDAO;
 import budget.domain.Account;
 import budget.domain.Category;
-import budget.domain.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdatepicker.DateModel;
@@ -13,14 +12,11 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.*;
-import java.time.LocalDate;
 import java.util.*;
 
 public class AddTransactionDialog extends JDialog {
-    private static final Logger logger = LogManager.getLogger(TransactionDAO.class);
+    private static final Logger logger = LogManager.getLogger(AddTransactionDialog.class);
     private JFormattedTextField valueTextField;
     private JComboBox<Account> accountComboBox;
     private JComboBox<Category> categoryComboBox;
@@ -187,48 +183,14 @@ public class AddTransactionDialog extends JDialog {
             addTransactionButton.setText("Добавить расход");
         }
 
-        addTransactionButton.addActionListener(e -> {
-            final int wrongValue = -1;
-            int value;
-            Account account;
-            Category category;
-            Date date;
-            String note;
-
-            if (valueTextField.getValue() instanceof Long) {
-                value = (int) ((Long) valueTextField.getValue()).longValue() * 100;
-            } else if (valueTextField.getValue() instanceof Double) {
-                value = (int) ((Double) valueTextField.getValue()).doubleValue() * 100;
-            } else {
-                value = wrongValue;
-            }
-
-            account = (Account) accountComboBox.getSelectedItem();
-
-            category = (Category) categoryComboBox.getSelectedItem();
-
-            String textDate = datePicker.getJFormattedTextField().getText();
-            try {
-                date = (Date) datePicker.getJFormattedTextField().getFormatter().stringToValue(textDate);
-            } catch (ParseException parseException) {
-                date = new Date(0);
-            }
-
-            note = noteTextArea.getText();
-
-            if (value == wrongValue) {
-                JOptionPane.showMessageDialog(valueTextField, "Введите сумму");
-            } else if (account == null) {
-                JOptionPane.showMessageDialog(accountComboBox, "Выберите или создайте счёт");
-            } else if (category == null) {
-                JOptionPane.showMessageDialog(categoryComboBox, "Выберите или создайте категорию");
-            } else if (date.getTime() == 0) {
-                JOptionPane.showMessageDialog(datePicker, "Выберите дату");
-            } else {
-                Transaction.addTransaction(new Transaction(value, account, category, date, note));
-                dispose();
-            }
-        });
+        addTransactionButton.addActionListener(new AddTransactionListener(
+            this,
+            valueTextField,
+            accountComboBox,
+            categoryComboBox,
+            datePicker,
+            noteTextArea
+        ));
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 1;
