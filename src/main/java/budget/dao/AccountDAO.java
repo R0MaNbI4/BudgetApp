@@ -88,7 +88,7 @@ public class AccountDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
-                return null;
+                return new ArrayList<Account>();
             }
 
             ArrayList<Account> result = new ArrayList<>();
@@ -102,6 +102,7 @@ public class AccountDAO {
             } while(resultSet.next());
 
             logger.trace("accounts found\n" + result.toString());
+
             return result;
         } catch (SQLException e) {
             logger.error("Something went wrong while trying to get all accounts", e);

@@ -10,15 +10,17 @@ import java.util.ArrayList;
 
 public class TransactionDAO {
     private static final Logger logger = LogManager.getLogger(TransactionDAO.class);
+    public static final int valueMaxIntDigits = 9;
+    public static final int valueMaxFractionDigits = 2;
 
     public static void addTransaction(Transaction transaction) {
         Connection connection = DBConnection.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO transaction (`value`, `account_id`, `category_id`, `date`, `note`) VALUES ('?', '?', '?', '?', '?');");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO transaction (`value`, `account_id`, `category_id`, `date`, `note`) VALUES (?, ?, ?, ?, ?);");
             statement.setInt(1, transaction.getValue());
             statement.setInt(2, transaction.getAccount().getId());
             statement.setInt(3, transaction.getCategory().getId());
-            statement.setDate(4, (java.sql.Date) transaction.getDate());
+            statement.setDate(4, new java.sql.Date(transaction.getDate().getTime()));
             statement.setString(5, transaction.getNote());
             statement.execute();
             logger.info("transaction added\n" + transaction.toString());
@@ -31,7 +33,7 @@ public class TransactionDAO {
     public static void updateTransaction(int id, Transaction transaction) {
         Connection connection = DBConnection.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE transaction SET value = '?' account_id = '?' category_id = '?' date = '?' note = '?' WHERE id = '?'");
+            PreparedStatement statement = connection.prepareStatement("UPDATE transaction SET value = ? account_id = ? category_id = ? date = ? note = ? WHERE id = ?");
             statement.setInt(1, transaction.getValue());
             statement.setInt(2, transaction.getAccount().getId());
             statement.setInt(3, transaction.getCategory().getId());
@@ -96,7 +98,7 @@ public class TransactionDAO {
             ResultSet resultSet = statement.executeQuery();
 
             if (!resultSet.next()) {
-                return null;
+                return new ArrayList<Transaction>();
             }
 
             ArrayList<Transaction> result = new ArrayList<>();

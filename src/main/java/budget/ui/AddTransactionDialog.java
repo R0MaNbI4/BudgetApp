@@ -3,6 +3,7 @@ package budget.ui;
 import budget.dao.TransactionDAO;
 import budget.domain.Account;
 import budget.domain.Category;
+import budget.domain.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdatepicker.DateModel;
@@ -11,13 +12,20 @@ import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class AddTransactionDialog extends JDialog {
     private static final Logger logger = LogManager.getLogger(TransactionDAO.class);
+    private JFormattedTextField valueTextField;
+    private JComboBox<Account> accountComboBox;
+    private JComboBox<Category> categoryComboBox;
+    private JDatePickerImpl datePicker;
+    private JTextArea noteTextArea;
 
     AddTransactionDialog(JFrame frame, boolean isIncome) {
         setModal(true);
@@ -40,9 +48,9 @@ public class AddTransactionDialog extends JDialog {
 
     private void setValue() {
         NumberFormat valueFormat = NumberFormat.getNumberInstance();
-        valueFormat.setMaximumIntegerDigits(9);
-        valueFormat.setMaximumFractionDigits(2);
-        JFormattedTextField valueTextField = new JFormattedTextField(valueFormat);
+        valueFormat.setMaximumIntegerDigits(TransactionDAO.valueMaxIntDigits);
+        valueFormat.setMaximumFractionDigits(TransactionDAO.valueMaxFractionDigits);
+        valueTextField = new JFormattedTextField(valueFormat);
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Сумма", valueTextField);
@@ -56,7 +64,7 @@ public class AddTransactionDialog extends JDialog {
     }
 
     private void setAccount() {
-        JComboBox<Account> accountComboBox = new JComboBox<>();
+        accountComboBox = new JComboBox<>();
         accountComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -85,7 +93,7 @@ public class AddTransactionDialog extends JDialog {
     }
 
     private void setCategory(boolean isIncome) {
-        JComboBox<Category> categoryComboBox = new JComboBox<>();
+        categoryComboBox = new JComboBox<>();
         categoryComboBox.setRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -120,15 +128,16 @@ public class AddTransactionDialog extends JDialog {
     private void setDate() {
         DateModel model = new UtilDateModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, new Properties());
-        JDatePickerImpl datePicker = new JDatePickerImpl(datePanel, new JFormattedTextField.AbstractFormatter() {
-                SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+        datePicker = new JDatePickerImpl(datePanel, new JFormattedTextField.AbstractFormatter() {
+            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+
             @Override
-            public Object stringToValue(String text) {
+            public Object stringToValue(String text) throws ParseException {
                 try {
                     return formatter.parse(text);
                 } catch (ParseException e) {
-                    logger.error(String.format("Error during parse String %s to Date", text), e);
-                    throw new RuntimeException(String.format("Error during parse String %s to Date", text), e);
+                    logger.error(String.format("Error during parse String \"%s\" to Date", text), e);
+                    throw new ParseException(String.format("Error during parse String \"%s\" to Date", text), 0);
                 }
             }
 
@@ -142,7 +151,7 @@ public class AddTransactionDialog extends JDialog {
             }
         });
 
-        datePicker.setTextEditable(true);
+        model.setSelected(true);
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Дата", datePicker);
@@ -156,10 +165,10 @@ public class AddTransactionDialog extends JDialog {
     }
 
     private void setNote() {
-        JTextArea note = new JTextArea();
+        noteTextArea = new JTextArea();
 
         JPanel panel = new JPanel();
-        addLabelToComponent(panel, "Заметка", note);
+        addLabelToComponent(panel, "Заметка", noteTextArea);
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 1;
@@ -177,6 +186,49 @@ public class AddTransactionDialog extends JDialog {
         } else {
             addTransactionButton.setText("Добавить расход");
         }
+
+        addTransactionButton.addActionListener(e -> {
+            final int wrongValue = -1;
+            int value;
+            Account account;
+            Category category;
+            Date date;
+            String note;
+
+            if (valueTextField.getValue() instanceof Long) {
+                value = (int) ((Long) valueTextField.getValue()).longValue() * 100;
+            } else if (valueTextField.getValue() instanceof Double) {
+                value = (int) ((Double) valueTextField.getValue()).doubleValue() * 100;
+            } else {
+                value = wrongValue;
+            }
+
+            account = (Account) accountComboBox.getSelectedItem();
+
+            category = (Category) categoryComboBox.getSelectedItem();
+
+            String textDate = datePicker.getJFormattedTextField().getText();
+            try {
+                date = (Date) datePicker.getJFormattedTextField().getFormatter().stringToValue(textDate);
+            } catch (ParseException parseException) {
+                date = new Date(0);
+            }
+
+            note = noteTextArea.getText();
+
+            if (value == wrongValue) {
+                JOptionPane.showMessageDialog(valueTextField, "Введите сумму");
+            } else if (account == null) {
+                JOptionPane.showMessageDialog(accountComboBox, "Выберите или создайте счёт");
+            } else if (category == null) {
+                JOptionPane.showMessageDialog(categoryComboBox, "Выберите или создайте категорию");
+            } else if (date.getTime() == 0) {
+                JOptionPane.showMessageDialog(datePicker, "Выберите дату");
+            } else {
+                Transaction.addTransaction(new Transaction(value, account, category, date, note));
+                dispose();
+            }
+        });
 
         GridBagConstraints c = new GridBagConstraints();
         c.gridx = 1;

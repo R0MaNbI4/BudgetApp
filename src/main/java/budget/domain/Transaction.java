@@ -117,7 +117,7 @@ public class Transaction {
         TransactionDAO.addTransaction(transaction);
     }
 
-    public static void  updateTransaction(int id, Transaction modified) {
+    public static void updateTransaction(int id, Transaction modified) {
         TransactionDAO.updateTransaction(id, modified);
     }
 
