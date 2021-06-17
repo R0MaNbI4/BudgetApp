@@ -1,8 +1,9 @@
-package budget.ui;
+package budget.ui.add;
 
 import budget.dao.TransactionDAO;
 import budget.domain.Account;
 import budget.domain.Category;
+import budget.ui.ComboBoxRenderer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdatepicker.DateModel;
@@ -12,12 +13,10 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.*;
 import java.util.*;
 
-public class AddTransactionDialog extends JDialog {
+public class AddTransactionDialog extends JDialog implements AddItemDialog {
     private static final Logger logger = LogManager.getLogger(AddTransactionDialog.class);
     private final boolean isIncome;
     private final int paddingLeft = 120;
@@ -27,7 +26,7 @@ public class AddTransactionDialog extends JDialog {
     private JDatePickerImpl datePicker;
     private JTextArea noteTextArea;
 
-    AddTransactionDialog(JFrame frame, boolean isIncome) {
+    public AddTransactionDialog(JFrame frame, boolean isIncome) {
         setModal(true);
         setTitle("Добавить транзакцию");
         setSize(frame.getWidth(), frame.getHeight());
@@ -37,17 +36,17 @@ public class AddTransactionDialog extends JDialog {
         setLayout(gridBagLayout);
 
         this.isIncome = isIncome;
-        setValue();
-        setAccount();
-        setCategory(isIncome);
-        setDate();
-        setNote();
-        setAddTransactionButton(isIncome);
+        createValueField();
+        createAccountField();
+        createCategoryField(isIncome);
+        createDateField();
+        createNoteField();
+        createAddTransactionButton(isIncome);
 
         setVisible(true);
     }
 
-    private void setValue() {
+    private void createValueField() {
         NumberFormat valueFormat = NumberFormat.getNumberInstance();
         valueFormat.setMaximumIntegerDigits(TransactionDAO.valueMaxIntDigits);
         valueFormat.setMaximumFractionDigits(TransactionDAO.valueMaxFractionDigits);
@@ -56,94 +55,40 @@ public class AddTransactionDialog extends JDialog {
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Сумма", valueTextField);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weighty = 1;
-        c.insets = new Insets(0, paddingLeft, 0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        add(panel, setConstraints(1, 0, paddingLeft));
     }
 
-    private void setAccount() {
+    private void createAccountField() {
         accountComboBox = new JComboBox<>();
-        accountComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Account) {
-                    Account account = (Account) value;
-                    setText(account.getName());
-                }
-                return this;
-            }
-        });
+        accountComboBox.setRenderer(new ComboBoxRenderer());
 
-       updateAccountComboBox();
+        updateAccountComboBox();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Счёт", accountComboBox);
-
-        GridBagConstraints accountComboBoxConstraints = new GridBagConstraints();
-        accountComboBoxConstraints.gridx = 1;
-        accountComboBoxConstraints.gridy = 1;
-        accountComboBoxConstraints.weighty = 1;
-        accountComboBoxConstraints.insets = new Insets(0, paddingLeft, 0, 0);
-        accountComboBoxConstraints.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, accountComboBoxConstraints);
+        add(panel, setConstraints(1, 1, paddingLeft));
 
         JButton addAccountButton = new JButton("Добавить счёт");
         addAccountButton.addActionListener(e -> new AddAccountDialog(this));
-
-        GridBagConstraints addAccountButtonConstraints = new GridBagConstraints();
-        addAccountButtonConstraints.gridx = 2;
-        addAccountButtonConstraints.gridy = 1;
-        addAccountButtonConstraints.weighty = 1;
-        addAccountButtonConstraints.insets = new Insets(14, 10, 0, 0);
-        addAccountButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
-        add(addAccountButton, addAccountButtonConstraints);
+        add(addAccountButton, setConstraints(2, 1, new Insets(14, 10, 0, 0)));
     }
 
-    private void setCategory(boolean isIncome) {
+    private void createCategoryField(boolean isIncome) {
         categoryComboBox = new JComboBox<>();
-        categoryComboBox.setRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Category) {
-                    Category category = (Category) value;
-                    setText(category.getName());
-                }
-                return this;
-            }
-        });
+        categoryComboBox.setRenderer(new ComboBoxRenderer());
 
         updateCategoryComboBox();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Категория", categoryComboBox);
-
-        GridBagConstraints categoryComboBoxConstraints = new GridBagConstraints();
-        categoryComboBoxConstraints.gridx = 1;
-        categoryComboBoxConstraints.gridy = 2;
-        categoryComboBoxConstraints.weighty = 1;
-        categoryComboBoxConstraints.insets = new Insets(0, paddingLeft, 0, 0);
-        categoryComboBoxConstraints.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, categoryComboBoxConstraints);
+        add(panel, setConstraints(1, 2, paddingLeft));
 
         JButton addCategoryButton = new JButton("Добавить категорию");
         addCategoryButton.addActionListener(e -> new AddCategoryDialog(this, isIncome));
-
-        GridBagConstraints addCategoryButtonConstraints = new GridBagConstraints();
-        addCategoryButtonConstraints.gridx = 2;
-        addCategoryButtonConstraints.gridy = 2;
-        addCategoryButtonConstraints.weighty = 1;
-        addCategoryButtonConstraints.insets = new Insets(14, 10, 0, 0);
-        addCategoryButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
-        add(addCategoryButton, addCategoryButtonConstraints);
+        add(addCategoryButton, setConstraints(2, 2, new Insets(14, 10, 0, 0)));
     }
 
-    private void setDate() {
+    private void createDateField() {
         DateModel model = new UtilDateModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, new Properties());
         datePicker = new JDatePickerImpl(datePanel, new JFormattedTextField.AbstractFormatter() {
@@ -173,32 +118,18 @@ public class AddTransactionDialog extends JDialog {
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Дата", datePicker);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 3;
-        c.weighty = 1;
-        c.insets = new Insets(0, paddingLeft, 0, 0);
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        add(panel, setConstraints(1, 3, paddingLeft));
     }
 
-    private void setNote() {
+    private void createNoteField() {
         noteTextArea = new JTextArea();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Заметка", noteTextArea);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 4;
-        c.weighty = 2;
-        c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0, paddingLeft, 0, 0);
-        add(panel, c);
+        add(panel, setConstraints(1, 4, 2, GridBagConstraints.BOTH, paddingLeft));
     }
 
-    private void setAddTransactionButton(boolean isIncome) {
+    private void createAddTransactionButton(boolean isIncome) {
         JButton addTransactionButton = new JButton();
         if (isIncome) {
             addTransactionButton.setText("Добавить доход");
@@ -215,20 +146,7 @@ public class AddTransactionDialog extends JDialog {
             noteTextArea
         ));
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 5;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(10, paddingLeft, 10, 0);
-        add(addTransactionButton, c);
-    }
-
-    private void addLabelToComponent(JPanel panel, String labelText, Component comp) {
-        JLabel label = new JLabel(labelText);
-        panel.setLayout(new BorderLayout());
-        panel.add(comp, BorderLayout.CENTER);
-        panel.add(label, BorderLayout.NORTH);
+        add(addTransactionButton, setConstraints(1, 5, new Insets(10, paddingLeft, 10, 0)));
     }
 
     void updateAccountComboBox() {

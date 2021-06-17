@@ -1,4 +1,4 @@
-package budget.ui;
+package budget.ui.add;
 
 import budget.domain.Account;
 
@@ -13,10 +13,7 @@ public class AddAccountListener implements ActionListener {
     private final JTextField accountNameField;
     private final JFormattedTextField accountBalanceField;
 
-    AddAccountListener(AddTransactionDialog addTransactionDialog,
-                       AddAccountDialog addAccountDialog,
-                       JTextField accountNameField,
-                       JFormattedTextField accountBalanceField) {
+    AddAccountListener(AddTransactionDialog addTransactionDialog, AddAccountDialog addAccountDialog, JTextField accountNameField, JFormattedTextField accountBalanceField) {
         this.addTransactionDialog = addTransactionDialog;
         this.addAccountDialog = addAccountDialog;
         this.accountNameField = accountNameField;

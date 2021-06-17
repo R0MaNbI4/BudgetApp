@@ -1,9 +1,9 @@
-package budget.ui;
+package budget.ui.add;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class AddCategoryDialog extends JDialog {
+public class AddCategoryDialog extends JDialog implements AddItemDialog {
     private final int WIDTH = 250;
     private final int HEIGHT = 150;
     private final AddTransactionDialog addTransactionDialog;
@@ -22,27 +22,21 @@ public class AddCategoryDialog extends JDialog {
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
 
-        setName();
-        setAddCategoryButton();
+        createNameField();
+        createAddCategoryButton();
 
         setVisible(true);
     }
 
-    private void setName() {
+    private void createNameField() {
         categoryNameField = new JTextField();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Название", categoryNameField);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        add(panel, setConstraints(1, 0));
     }
 
-    private void setAddCategoryButton() {
+    private void createAddCategoryButton() {
         JButton addCategoryButton = new JButton("Добавить категорию");
         addCategoryButton.addActionListener(new AddCategoryListener(
                 addTransactionDialog,
@@ -51,18 +45,6 @@ public class AddCategoryDialog extends JDialog {
                 categoryNameField
         ));
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 2;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(addCategoryButton, c);
-    }
-
-    private void addLabelToComponent(JPanel panel, String labelText, Component comp) {
-        JLabel label = new JLabel(labelText);
-        panel.setLayout(new BorderLayout());
-        panel.add(comp, BorderLayout.CENTER);
-        panel.add(label, BorderLayout.NORTH);
+        add(addCategoryButton, setConstraints(1, 2));
     }
 }

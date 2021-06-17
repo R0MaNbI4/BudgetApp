@@ -1,4 +1,4 @@
-package budget.ui;
+package budget.ui.add;
 
 import budget.dao.TransactionDAO;
 
@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.NumberFormat;
 
-public class AddAccountDialog extends JDialog {
+public class AddAccountDialog extends JDialog implements AddItemDialog {
     private final int WIDTH = 250;
     private final int HEIGHT = 250;
     private final AddTransactionDialog addTransactionDialog;
@@ -24,28 +24,22 @@ public class AddAccountDialog extends JDialog {
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
 
-        setName();
-        setBalance();
-        setAddAccountButton();
+        createNameField();
+        createBalanceField();
+        createAddAccountButton();
 
         setVisible(true);
     }
 
-    private void setName() {
+    private void createNameField() {
         accountNameField = new JTextField();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Название", accountNameField);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 0;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        add(panel, setConstraints(1, 0));
     }
 
-    private void setBalance() {
+    private void createBalanceField() {
         NumberFormat valueFormat = NumberFormat.getNumberInstance();
         valueFormat.setMaximumIntegerDigits(TransactionDAO.valueMaxIntDigits);
         valueFormat.setMaximumFractionDigits(TransactionDAO.valueMaxFractionDigits);
@@ -54,16 +48,10 @@ public class AddAccountDialog extends JDialog {
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Начальный баланс", accountBalanceField);
-
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        add(panel, setConstraints(1, 1));
     }
 
-    private void setAddAccountButton() {
+    private void createAddAccountButton() {
         JButton addAccountButton = new JButton("Добавить счёт");
         addAccountButton.addActionListener(new AddAccountListener(
                 addTransactionDialog,
@@ -72,18 +60,6 @@ public class AddAccountDialog extends JDialog {
                 accountBalanceField
         ));
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 2;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(addAccountButton, c);
-    }
-
-    private void addLabelToComponent(JPanel panel, String labelText, Component comp) {
-        JLabel label = new JLabel(labelText);
-        panel.setLayout(new BorderLayout());
-        panel.add(comp, BorderLayout.CENTER);
-        panel.add(label, BorderLayout.NORTH);
+        add(addAccountButton, setConstraints(1, 2));
     }
 }

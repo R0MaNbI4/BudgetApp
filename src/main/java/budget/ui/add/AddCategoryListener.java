@@ -1,4 +1,4 @@
-package budget.ui;
+package budget.ui.add;
 
 import budget.domain.Category;
 
@@ -12,10 +12,7 @@ public class AddCategoryListener implements ActionListener {
     private final boolean isIncome;
     private final JTextField categoryNameField;
 
-    AddCategoryListener(AddTransactionDialog addTransactionDialog,
-                        AddCategoryDialog addCategoryDialog,
-                        boolean isIncome,
-                        JTextField categoryNameField) {
+    AddCategoryListener(AddTransactionDialog addTransactionDialog, AddCategoryDialog addCategoryDialog, boolean isIncome, JTextField categoryNameField) {
         this.addTransactionDialog = addTransactionDialog;
         this.addCategoryDialog = addCategoryDialog;
         this.isIncome = isIncome;
