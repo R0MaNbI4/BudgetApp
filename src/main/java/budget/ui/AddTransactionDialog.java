@@ -12,11 +12,15 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.*;
 import java.util.*;
 
 public class AddTransactionDialog extends JDialog {
     private static final Logger logger = LogManager.getLogger(AddTransactionDialog.class);
+    private final boolean isIncome;
+    private final int paddingLeft = 120;
     private JFormattedTextField valueTextField;
     private JComboBox<Account> accountComboBox;
     private JComboBox<Category> categoryComboBox;
@@ -32,6 +36,7 @@ public class AddTransactionDialog extends JDialog {
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
 
+        this.isIncome = isIncome;
         setValue();
         setAccount();
         setCategory(isIncome);
@@ -55,6 +60,7 @@ public class AddTransactionDialog extends JDialog {
         c.gridx = 1;
         c.gridy = 0;
         c.weighty = 1;
+        c.insets = new Insets(0, paddingLeft, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         add(panel, c);
     }
@@ -73,19 +79,29 @@ public class AddTransactionDialog extends JDialog {
             }
         });
 
-        for (Account account : Account.getAllAccounts()) {
-            accountComboBox.addItem(account);
-        }
+       updateAccountComboBox();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Счёт", accountComboBox);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 1;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        GridBagConstraints accountComboBoxConstraints = new GridBagConstraints();
+        accountComboBoxConstraints.gridx = 1;
+        accountComboBoxConstraints.gridy = 1;
+        accountComboBoxConstraints.weighty = 1;
+        accountComboBoxConstraints.insets = new Insets(0, paddingLeft, 0, 0);
+        accountComboBoxConstraints.fill = GridBagConstraints.HORIZONTAL;
+        add(panel, accountComboBoxConstraints);
+
+        JButton addAccountButton = new JButton("Добавить счёт");
+        addAccountButton.addActionListener(e -> new AddAccountDialog(this));
+
+        GridBagConstraints addAccountButtonConstraints = new GridBagConstraints();
+        addAccountButtonConstraints.gridx = 2;
+        addAccountButtonConstraints.gridy = 1;
+        addAccountButtonConstraints.weighty = 1;
+        addAccountButtonConstraints.insets = new Insets(14, 10, 0, 0);
+        addAccountButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
+        add(addAccountButton, addAccountButtonConstraints);
     }
 
     private void setCategory(boolean isIncome) {
@@ -102,23 +118,29 @@ public class AddTransactionDialog extends JDialog {
             }
         });
 
-        for (Category category : Category.getAllCategories()) {
-            if (isIncome && category.isIncome()) {
-                categoryComboBox.addItem(category);
-            } else if (!isIncome && !category.isIncome()) {
-                categoryComboBox.addItem(category);
-            }
-        }
+        updateCategoryComboBox();
 
         JPanel panel = new JPanel();
         addLabelToComponent(panel, "Категория", categoryComboBox);
 
-        GridBagConstraints c = new GridBagConstraints();
-        c.gridx = 1;
-        c.gridy = 2;
-        c.weighty = 1;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        add(panel, c);
+        GridBagConstraints categoryComboBoxConstraints = new GridBagConstraints();
+        categoryComboBoxConstraints.gridx = 1;
+        categoryComboBoxConstraints.gridy = 2;
+        categoryComboBoxConstraints.weighty = 1;
+        categoryComboBoxConstraints.insets = new Insets(0, paddingLeft, 0, 0);
+        categoryComboBoxConstraints.fill = GridBagConstraints.HORIZONTAL;
+        add(panel, categoryComboBoxConstraints);
+
+        JButton addCategoryButton = new JButton("Добавить категорию");
+        addCategoryButton.addActionListener(e -> new AddCategoryDialog(this, isIncome));
+
+        GridBagConstraints addCategoryButtonConstraints = new GridBagConstraints();
+        addCategoryButtonConstraints.gridx = 2;
+        addCategoryButtonConstraints.gridy = 2;
+        addCategoryButtonConstraints.weighty = 1;
+        addCategoryButtonConstraints.insets = new Insets(14, 10, 0, 0);
+        addCategoryButtonConstraints.fill = GridBagConstraints.HORIZONTAL;
+        add(addCategoryButton, addCategoryButtonConstraints);
     }
 
     private void setDate() {
@@ -156,6 +178,7 @@ public class AddTransactionDialog extends JDialog {
         c.gridx = 1;
         c.gridy = 3;
         c.weighty = 1;
+        c.insets = new Insets(0, paddingLeft, 0, 0);
         c.fill = GridBagConstraints.HORIZONTAL;
         add(panel, c);
     }
@@ -171,7 +194,7 @@ public class AddTransactionDialog extends JDialog {
         c.gridy = 4;
         c.weighty = 2;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0, 0, 10, 0);
+        c.insets = new Insets(0, paddingLeft, 0, 0);
         add(panel, c);
     }
 
@@ -197,7 +220,7 @@ public class AddTransactionDialog extends JDialog {
         c.gridy = 5;
         c.weighty = 1;
         c.fill = GridBagConstraints.HORIZONTAL;
-        c.insets = new Insets(0, 0, 10, 0);
+        c.insets = new Insets(10, paddingLeft, 10, 0);
         add(addTransactionButton, c);
     }
 
@@ -206,5 +229,23 @@ public class AddTransactionDialog extends JDialog {
         panel.setLayout(new BorderLayout());
         panel.add(comp, BorderLayout.CENTER);
         panel.add(label, BorderLayout.NORTH);
+    }
+
+    void updateAccountComboBox() {
+        accountComboBox.removeAllItems();
+        for (Account account : Account.getAllAccounts()) {
+            accountComboBox.addItem(account);
+        }
+    }
+
+    void updateCategoryComboBox() {
+        categoryComboBox.removeAllItems();
+        for (Category category : Category.getAllCategories()) {
+            if (isIncome && category.isIncome()) {
+                categoryComboBox.addItem(category);
+            } else if (!isIncome && !category.isIncome()) {
+                categoryComboBox.addItem(category);
+            }
+        }
     }
 }

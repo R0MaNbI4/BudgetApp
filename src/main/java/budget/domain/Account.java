@@ -19,6 +19,10 @@ public class Account {
         this.balance = balance;
     }
 
+    public Account(String name, int balance) {
+        this(-1, name, balance);
+    }
+
     @Override
     public String toString() {
         return "Account{" +

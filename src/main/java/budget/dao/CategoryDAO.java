@@ -17,7 +17,7 @@ public class CategoryDAO {
     public static void addCategory(Category category) {
         Connection connection = DBConnection.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO category (`name`, `isIncome`) VALUES ('?', '?');");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO category (`name`, `isIncome`) VALUES (?, ?);");
             statement.setString(1, category.getName());
             statement.setBoolean(2, category.isIncome());
             statement.execute();
@@ -31,7 +31,7 @@ public class CategoryDAO {
     public static void updateCategory(int id, Category category) {
         Connection connection = DBConnection.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE category SET name = '?' isIncome = '?' WHERE id = '?'");
+            PreparedStatement statement = connection.prepareStatement("UPDATE category SET name = ? isIncome = ? WHERE id = ?");
             statement.setString(1, category.getName());
             statement.setBoolean(2, category.isIncome());
             statement.setInt(3, id);

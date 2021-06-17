@@ -2,13 +2,11 @@ package budget.ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class MainFrame extends JFrame {
     private final Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
-    private final int WIDTH = 400;
-    private final int HEIGHT = 500;
+    private final int WIDTH = 600;
+    private final int HEIGHT = 600;
     private final int X_CENTER = (int) (dimension.getWidth() / 2) - (WIDTH / 2);
     private final int Y_CENTER = (int) (dimension.getHeight() / 2) - (HEIGHT / 2);
 

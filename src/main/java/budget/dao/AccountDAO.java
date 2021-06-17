@@ -17,7 +17,7 @@ public class AccountDAO {
     public static void addAccount(Account account) {
         Connection connection = DBConnection.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("INSERT INTO account (`name`, `balance`) VALUES ('?', '?');");
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO account (`name`, `balance`) VALUES (?, ?);");
             statement.setString(1, account.getName());
             statement.setInt(2, account.getBalance());
             statement.execute();
@@ -31,7 +31,7 @@ public class AccountDAO {
     public static void updateAccount(int id, Account account) {
         Connection connection = DBConnection.getConnection();
         try {
-            PreparedStatement statement = connection.prepareStatement("UPDATE account SET name = '?' balance = '?' WHERE id = '?'");
+            PreparedStatement statement = connection.prepareStatement("UPDATE account SET name = ? balance = ? WHERE id = ?");
             statement.setString(1, account.getName());
             statement.setInt(2, account.getBalance());
             statement.setInt(3, id);
