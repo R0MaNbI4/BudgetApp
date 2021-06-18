@@ -18,6 +18,7 @@ public class AddCategoryDialog extends JDialog implements AddItemDialog {
         setTitle("Добавить категорию");
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(addTransactionDialog);
+        setResizable(false);
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);

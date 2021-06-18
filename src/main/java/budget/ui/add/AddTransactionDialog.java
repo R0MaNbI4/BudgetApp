@@ -4,6 +4,7 @@ import budget.dao.TransactionDAO;
 import budget.domain.Account;
 import budget.domain.Category;
 import budget.ui.ComboBoxRenderer;
+import budget.ui.DateFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdatepicker.DateModel;
@@ -31,6 +32,7 @@ public class AddTransactionDialog extends JDialog implements AddItemDialog {
         setTitle("Добавить транзакцию");
         setSize(frame.getWidth(), frame.getHeight());
         setLocationRelativeTo(frame);
+        setResizable(false);
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
@@ -91,28 +93,7 @@ public class AddTransactionDialog extends JDialog implements AddItemDialog {
     private void createDateField() {
         DateModel model = new UtilDateModel();
         JDatePanelImpl datePanel = new JDatePanelImpl(model, new Properties());
-        datePicker = new JDatePickerImpl(datePanel, new JFormattedTextField.AbstractFormatter() {
-            SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
-
-            @Override
-            public Object stringToValue(String text) throws ParseException {
-                try {
-                    return formatter.parse(text);
-                } catch (ParseException e) {
-                    logger.error(String.format("Error during parse String \"%s\" to Date", text), e);
-                    throw new ParseException(String.format("Error during parse String \"%s\" to Date", text), 0);
-                }
-            }
-
-            @Override
-            public String valueToString(Object value) {
-                if (value != null) {
-                    GregorianCalendar date = (GregorianCalendar) value;
-                    return formatter.format(Date.from(date.toZonedDateTime().toInstant()));
-                }
-                return "";
-            }
-        });
+        datePicker = new JDatePickerImpl(datePanel, new DateFormatter("dd.MM.yyyy"));
 
         model.setSelected(true);
 

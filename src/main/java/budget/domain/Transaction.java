@@ -81,7 +81,7 @@ public class Transaction {
     }
 
     Transaction build() {
-        return build();
+        return this;
     }
 
     public int getId() {

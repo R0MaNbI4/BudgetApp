@@ -3,7 +3,7 @@ package budget.ui.add;
 import javax.swing.*;
 import java.awt.*;
 
-public interface AddItemDialog {
+interface AddItemDialog {
     default void addLabelToComponent(JPanel panel, String labelText, Component comp) {
         JLabel label = new JLabel(labelText);
         panel.setLayout(new BorderLayout());

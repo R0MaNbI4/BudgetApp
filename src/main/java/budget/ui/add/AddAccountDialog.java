@@ -20,6 +20,7 @@ public class AddAccountDialog extends JDialog implements AddItemDialog {
         setTitle("Добавить счёт");
         setSize(WIDTH, HEIGHT);
         setLocationRelativeTo(addTransactionDialog);
+        setResizable(false);
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);

@@ -102,7 +102,8 @@ public class TransactionDAO {
             }
 
             ArrayList<Transaction> result = new ArrayList<>();
-            do { result.add(
+            do {
+                result.add(
                 new Transaction(
                     resultSet.getInt(1),
                     resultSet.getInt(2),
@@ -118,6 +119,46 @@ public class TransactionDAO {
         } catch (SQLException e) {
             logger.error(String.format("Something went wrong while trying to get transactions in the range from %s to %s", startDate, endDate), e);
             throw new DAOException("SWW", e);
+        }
+    }
+
+    public static Date getDateOfFirstTransaction() {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT date FROM transaction ORDER BY date ASC LIMIT 1");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                logger.warn("First transaction not found");
+                return new Date();
+            }
+
+            Date date = resultSet.getDate(1);
+            logger.trace("Found first transaction with date " + date);
+            return date;
+        } catch (SQLException e) {
+            logger.error("Can't found first transaction\n", e);
+            throw new DAOException("Can't found first transaction", e);
+        }
+    }
+
+    public static Date getDateOfLastTransaction() {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT date FROM transaction ORDER BY date DESC LIMIT 1");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                logger.warn("Last transaction not found");
+                return new Date();
+            }
+
+            Date date = resultSet.getDate(1);
+            logger.trace("Found last transaction with date " + date);
+            return date;
+        } catch (SQLException e) {
+            logger.error("Can't found last transaction\n", e);
+            throw new DAOException("Can't found last transaction", e);
         }
     }
 }
