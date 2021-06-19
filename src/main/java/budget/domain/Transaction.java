@@ -150,4 +150,12 @@ public class Transaction {
     public static ArrayList<Transaction> getTransactionByDate(Date startDate, Date endDate) {
         return TransactionDAO.getTransactionByDate(startDate, endDate);
     }
+
+    public static ArrayList<Transaction> getTransactionsByPeriodAndCategoryAndAccount(Date startDate, Date endDate, Category category, Account account) {
+        return TransactionDAO.getTransactionsByPeriodAndCategoryAndAccount(startDate, endDate, category, account);
+    }
+
+    public static ArrayList<Transaction> getTransactionsByPeriodAndCategory(Date startDate, Date endDate, Category category) {
+        return TransactionDAO.getTransactionsByPeriodAndCategory(startDate, endDate, category);
+    }
 }

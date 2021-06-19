@@ -1,6 +1,6 @@
 package budget.ui.statistics;
 
-import budget.ui.DateFormatter;
+import budget.ui.util.DateFormatter;
 import budget.ui.MainFrame;
 import org.jdatepicker.DateModel;
 import org.jdatepicker.impl.JDatePanelImpl;
@@ -9,10 +9,7 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Properties;
 
 public class DatePeriodSpecificDialog extends JDialog {
@@ -61,14 +58,11 @@ public class DatePeriodSpecificDialog extends JDialog {
     private void createSubmitButton() {
         JButton sumbitButton = new JButton("ОК");
 
-        sumbitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                frame.getDateChooser().setStartDate((Date) startDatePicker.getModel().getValue());
-                frame.getDateChooser().setEndDate((Date) endDatePicker.getModel().getValue());
-                frame.updatePeriodLabel();
-                datePeriodSpecificDialog.dispose();
-            }
+        sumbitButton.addActionListener(e -> {
+            frame.getDateChooser().setStartDate((Date) startDatePicker.getModel().getValue());
+            frame.getDateChooser().setEndDate((Date) endDatePicker.getModel().getValue());
+            frame.updatePieChart();
+            datePeriodSpecificDialog.dispose();
         });
 
         add(sumbitButton, c);

@@ -49,8 +49,17 @@ public class Account {
         return name;
     }
 
+    public boolean isSuperAccount() {
+        if (this.id == -1 && this.name == "Все" && this.balance == -1) {
+            return true;
+        }
+        return false;
+    }
+
     public static void addAccount(Account account) {
-        AccountDAO.addAccount(account);
+        if (!account.isSuperAccount()) {
+            AccountDAO.addAccount(account);
+        }
     }
 
     public static void updateAccount(int id, Account account) {

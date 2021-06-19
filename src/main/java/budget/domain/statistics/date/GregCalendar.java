@@ -1,4 +1,4 @@
-package budget.domain.statistics;
+package budget.domain.statistics.date;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -7,16 +7,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AddCategoryListener implements ActionListener {
-    private final AddTransactionDialog addTransactionDialog;
     private final AddCategoryDialog addCategoryDialog;
     private final boolean isIncome;
     private final JTextField categoryNameField;
 
-    AddCategoryListener(AddTransactionDialog addTransactionDialog, AddCategoryDialog addCategoryDialog, boolean isIncome, JTextField categoryNameField) {
-        this.addTransactionDialog = addTransactionDialog;
+    AddCategoryListener(AddCategoryDialog addCategoryDialog) {
         this.addCategoryDialog = addCategoryDialog;
-        this.isIncome = isIncome;
-        this.categoryNameField = categoryNameField;
+        this.isIncome = addCategoryDialog.isIncome();
+        this.categoryNameField = addCategoryDialog.getCategoryNameField();
     }
 
     @Override
@@ -27,7 +25,7 @@ public class AddCategoryListener implements ActionListener {
             JOptionPane.showMessageDialog(categoryNameField, "Введите название категории");
         } else {
             Category.addCategory(new Category(name, isIncome));
-            addTransactionDialog.updateCategoryComboBox();
+            addCategoryDialog.getParent().updateCategoryComboBox();
             addCategoryDialog.dispose();
         }
     }

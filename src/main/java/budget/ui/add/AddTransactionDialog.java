@@ -3,8 +3,9 @@ package budget.ui.add;
 import budget.dao.TransactionDAO;
 import budget.domain.Account;
 import budget.domain.Category;
-import budget.ui.ComboBoxRenderer;
-import budget.ui.DateFormatter;
+import budget.ui.MainFrame;
+import budget.ui.util.ComboBoxRenderer;
+import budget.ui.util.DateFormatter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jdatepicker.DateModel;
@@ -21,18 +22,22 @@ public class AddTransactionDialog extends JDialog implements AddItemDialog {
     private static final Logger logger = LogManager.getLogger(AddTransactionDialog.class);
     private final boolean isIncome;
     private final int paddingLeft = 120;
+    private MainFrame frame;
     private JFormattedTextField valueTextField;
     private JComboBox<Account> accountComboBox;
     private JComboBox<Category> categoryComboBox;
     private JDatePickerImpl datePicker;
     private JTextArea noteTextArea;
 
-    public AddTransactionDialog(JFrame frame, boolean isIncome) {
+
+    public AddTransactionDialog(MainFrame frame, boolean isIncome) {
         setModal(true);
         setTitle("Добавить транзакцию");
-        setSize(frame.getWidth(), frame.getHeight());
+        setSize(550, 600);
         setLocationRelativeTo(frame);
         setResizable(false);
+
+        this.frame = frame;
 
         GridBagLayout gridBagLayout = new GridBagLayout();
         setLayout(gridBagLayout);
@@ -73,6 +78,30 @@ public class AddTransactionDialog extends JDialog implements AddItemDialog {
         JButton addAccountButton = new JButton("Добавить счёт");
         addAccountButton.addActionListener(e -> new AddAccountDialog(this));
         add(addAccountButton, setConstraints(2, 1, new Insets(14, 10, 0, 0)));
+    }
+
+    public JFormattedTextField getValueTextField() {
+        return valueTextField;
+    }
+
+    public JComboBox<Account> getAccountComboBox() {
+        return accountComboBox;
+    }
+
+    public JComboBox<Category> getCategoryComboBox() {
+        return categoryComboBox;
+    }
+
+    public JDatePickerImpl getDatePicker() {
+        return datePicker;
+    }
+
+    public JTextArea getNoteTextArea() {
+        return noteTextArea;
+    }
+
+    public MainFrame getParent() {
+        return frame;
     }
 
     private void createCategoryField(boolean isIncome) {
@@ -118,14 +147,7 @@ public class AddTransactionDialog extends JDialog implements AddItemDialog {
             addTransactionButton.setText("Добавить расход");
         }
 
-        addTransactionButton.addActionListener(new AddTransactionListener(
-            this,
-            valueTextField,
-            accountComboBox,
-            categoryComboBox,
-            datePicker,
-            noteTextArea
-        ));
+        addTransactionButton.addActionListener(new AddTransactionListener(this));
 
         add(addTransactionButton, setConstraints(1, 5, new Insets(10, paddingLeft, 10, 0)));
     }

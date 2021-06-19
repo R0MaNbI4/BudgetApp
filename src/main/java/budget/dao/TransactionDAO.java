@@ -1,5 +1,7 @@
 package budget.dao;
 
+import budget.domain.Account;
+import budget.domain.Category;
 import budget.domain.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,21 +103,7 @@ public class TransactionDAO {
                 return new ArrayList<Transaction>();
             }
 
-            ArrayList<Transaction> result = new ArrayList<>();
-            do {
-                result.add(
-                new Transaction(
-                    resultSet.getInt(1),
-                    resultSet.getInt(2),
-                    AccountDAO.getAccountById(resultSet.getInt(3)),
-                    CategoryDAO.getCategoryById(resultSet.getInt(4)),
-                    resultSet.getDate(5),
-                    resultSet.getString(6)
-                ));
-            } while(resultSet.next());
-
-            logger.trace("transactions found\n" + result.toString());
-            return result;
+            return getTransactions(resultSet);
         } catch (SQLException e) {
             logger.error(String.format("Something went wrong while trying to get transactions in the range from %s to %s", startDate, endDate), e);
             throw new DAOException("SWW", e);
@@ -160,5 +148,62 @@ public class TransactionDAO {
             logger.error("Can't found last transaction\n", e);
             throw new DAOException("Can't found last transaction", e);
         }
+    }
+
+    public static ArrayList<Transaction> getTransactionsByPeriodAndCategory(Date startDate, Date endDate, Category category) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM transaction WHERE date BETWEEN ? AND ? AND category_id = ?;");
+            statement.setDate(1, new java.sql.Date(startDate.getTime()));
+            statement.setDate(2, new java.sql.Date(endDate.getTime()));
+            statement.setInt(3, category.getId());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                return new ArrayList<Transaction>();
+            }
+
+            return getTransactions(resultSet);
+        } catch (SQLException e) {
+            logger.error("Can't found last transaction\n", e);
+            throw new DAOException("Can't found last transaction", e);
+        }
+    }
+
+    public static ArrayList<Transaction> getTransactionsByPeriodAndCategoryAndAccount(Date startDate, Date endDate, Category category, Account account) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM transaction WHERE date BETWEEN ? AND ? AND category_id = ? AND account_id = ?;");
+            statement.setDate(1, new java.sql.Date(startDate.getTime()));
+            statement.setDate(2, new java.sql.Date(endDate.getTime()));
+            statement.setInt(3, category.getId());
+            statement.setInt(4, account.getId());
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                return new ArrayList<Transaction>();
+            }
+
+            return getTransactions(resultSet);
+        } catch (SQLException e) {
+            logger.error("Can't found last transaction\n", e);
+            throw new DAOException("Can't found last transaction", e);
+        }
+    }
+
+    private static ArrayList<Transaction> getTransactions(ResultSet resultSet) throws SQLException {
+        ArrayList<Transaction> result = new ArrayList<Transaction>();
+        do {
+            result.add(
+                new Transaction(
+                    resultSet.getInt(1),
+                    resultSet.getInt(2),
+                    AccountDAO.getAccountById(resultSet.getInt(3)),
+                    CategoryDAO.getCategoryById(resultSet.getInt(4)),
+                    resultSet.getDate(5),
+                    resultSet.getString(6)
+                ));
+        } while(resultSet.next());
+        return result;
     }
 }

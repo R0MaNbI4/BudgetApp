@@ -1,8 +1,7 @@
 package budget.domain;
 
-import budget.dao.AccountDAO;
 import budget.dao.CategoryDAO;
-import budget.dao.TransactionDAO;
+import budget.ui.statistics.CategoryType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -82,5 +81,9 @@ public class Category {
 
     public static ArrayList<Category> getAllCategories() {
         return CategoryDAO.getAllCategories();
+    }
+
+    public static ArrayList<Category> getCategoriesByType(CategoryType categoryType) {
+        return CategoryDAO.getCategoriesByType(categoryType);
     }
 }

@@ -1,4 +1,4 @@
-package budget.ui;
+package budget.ui.util;
 
 import budget.domain.Account;
 import budget.domain.Category;

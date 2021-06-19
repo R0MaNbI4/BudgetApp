@@ -2,6 +2,7 @@ package budget.dao;
 
 import budget.domain.Account;
 import budget.domain.Category;
+import budget.ui.statistics.CategoryType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class CategoryDAO {
     private static final Logger logger = LogManager.getLogger(CategoryDAO.class);
@@ -99,13 +101,55 @@ public class CategoryDAO {
                                 resultSet.getString(2),
                                 resultSet.getBoolean(3)
                         ));
-            } while(resultSet.next());
+            } while (resultSet.next());
 
             logger.trace("categories found\n" + result.toString());
             return result;
         } catch (SQLException e) {
             logger.error("Something went wrong while trying to get all categories", e);
             throw new DAOException("Something went wrong while trying to get all categories", e);
+        }
+    }
+
+    public static ArrayList<Category> getCategoriesByType(CategoryType categoryType) {
+        Connection connection = DBConnection.getConnection();
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM category WHERE isIncome = ?");
+
+            switch (categoryType) {
+                case INCOME:
+                    statement.setInt(1, 1);
+                    break;
+                case EXPENSE:
+                    statement.setInt(1, 0);
+                    break;
+                case INCOME_AND_EXPENSE:
+                    connection.close();
+                    return getAllCategories();
+                case NONE:
+                    return new ArrayList<>();
+            }
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (!resultSet.next()) {
+                return null;
+            }
+
+            ArrayList<Category> result = new ArrayList<>();
+            do {
+                result.add(
+                        new Category(
+                                resultSet.getInt(1),
+                                resultSet.getString(2),
+                                resultSet.getBoolean(3)
+                        ));
+            } while (resultSet.next());
+
+            return result;
+        } catch (SQLException e) {
+            logger.error("Can't find category with type " + categoryType, e);
+            throw new DAOException("Can't find category with type " + categoryType, e);
         }
     }
 }

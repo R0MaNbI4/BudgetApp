@@ -32,6 +32,18 @@ public class AddAccountDialog extends JDialog implements AddItemDialog {
         setVisible(true);
     }
 
+    public JTextField getAccountNameField() {
+        return accountNameField;
+    }
+
+    public JFormattedTextField getAccountBalanceField() {
+        return accountBalanceField;
+    }
+
+    public AddTransactionDialog getParent() {
+        return addTransactionDialog;
+    }
+
     private void createNameField() {
         accountNameField = new JTextField();
 
@@ -54,12 +66,7 @@ public class AddAccountDialog extends JDialog implements AddItemDialog {
 
     private void createAddAccountButton() {
         JButton addAccountButton = new JButton("Добавить счёт");
-        addAccountButton.addActionListener(new AddAccountListener(
-                addTransactionDialog,
-                this,
-                accountNameField,
-                accountBalanceField
-        ));
+        addAccountButton.addActionListener(new AddAccountListener(this));
 
         add(addAccountButton, setConstraints(1, 2));
     }

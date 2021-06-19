@@ -29,6 +29,22 @@ public class AddCategoryDialog extends JDialog implements AddItemDialog {
         setVisible(true);
     }
 
+    public AddTransactionDialog getAddTransactionDialog() {
+        return addTransactionDialog;
+    }
+
+    public boolean isIncome() {
+        return isIncome;
+    }
+
+    public JTextField getCategoryNameField() {
+        return categoryNameField;
+    }
+
+    public AddTransactionDialog getParent() {
+        return addTransactionDialog;
+    }
+
     private void createNameField() {
         categoryNameField = new JTextField();
 
@@ -39,12 +55,7 @@ public class AddCategoryDialog extends JDialog implements AddItemDialog {
 
     private void createAddCategoryButton() {
         JButton addCategoryButton = new JButton("Добавить категорию");
-        addCategoryButton.addActionListener(new AddCategoryListener(
-                addTransactionDialog,
-                this,
-                isIncome,
-                categoryNameField
-        ));
+        addCategoryButton.addActionListener(new AddCategoryListener(this));
 
         add(addCategoryButton, setConstraints(1, 2));
     }

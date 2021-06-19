@@ -8,16 +8,14 @@ import java.awt.event.ActionListener;
 
 public class AddAccountListener implements ActionListener {
     private final int wrongValue = -1;
-    private final AddTransactionDialog addTransactionDialog;
     private final AddAccountDialog addAccountDialog;
     private final JTextField accountNameField;
     private final JFormattedTextField accountBalanceField;
 
-    AddAccountListener(AddTransactionDialog addTransactionDialog, AddAccountDialog addAccountDialog, JTextField accountNameField, JFormattedTextField accountBalanceField) {
-        this.addTransactionDialog = addTransactionDialog;
+    AddAccountListener(AddAccountDialog addAccountDialog) {
         this.addAccountDialog = addAccountDialog;
-        this.accountNameField = accountNameField;
-        this.accountBalanceField = accountBalanceField;
+        this.accountNameField = addAccountDialog.getAccountNameField();
+        this.accountBalanceField = addAccountDialog.getAccountBalanceField();
     }
 
     @Override
@@ -31,7 +29,8 @@ public class AddAccountListener implements ActionListener {
             JOptionPane.showMessageDialog(accountNameField, "Введите название счёта");
         } else {
             Account.addAccount(new Account(name, balance));
-            addTransactionDialog.updateAccountComboBox();
+            addAccountDialog.getParent().updateAccountComboBox();
+            addAccountDialog.getParent().getParent().updateAccountComboBox();
             addAccountDialog.dispose();
         }
     }

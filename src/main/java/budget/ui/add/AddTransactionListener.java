@@ -20,13 +20,13 @@ public class AddTransactionListener implements ActionListener {
     private final JDatePickerImpl datePicker;
     private final JTextArea noteTextArea;
 
-    AddTransactionListener(AddTransactionDialog addTransactionDialog, JFormattedTextField valueTextField, JComboBox<Account> accountComboBox, JComboBox<Category> categoryComboBox, JDatePickerImpl datePicker, JTextArea noteTextArea) {
+    AddTransactionListener(AddTransactionDialog addTransactionDialog) {
         this.addTransactionDialog = addTransactionDialog;
-        this.valueTextField = valueTextField;
-        this.accountComboBox = accountComboBox;
-        this.categoryComboBox = categoryComboBox;
-        this.datePicker = datePicker;
-        this.noteTextArea = noteTextArea;
+        this.valueTextField = addTransactionDialog.getValueTextField();
+        this.accountComboBox = addTransactionDialog.getAccountComboBox();
+        this.categoryComboBox = addTransactionDialog.getCategoryComboBox();
+        this.datePicker = addTransactionDialog.getDatePicker();
+        this.noteTextArea = addTransactionDialog.getNoteTextArea();
     }
 
     @Override
@@ -47,6 +47,7 @@ public class AddTransactionListener implements ActionListener {
             JOptionPane.showMessageDialog(datePicker, "Выберите дату");
         } else {
             Transaction.addTransaction(new Transaction(value, account, category, date, note));
+            addTransactionDialog.getParent().updatePieChart();
             addTransactionDialog.dispose();
         }
     }
